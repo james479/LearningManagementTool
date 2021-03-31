@@ -20,11 +20,14 @@ namespace LMS.DATA.EF
             this.CourseCompletions = new HashSet<CourseCompletion>();
             this.LessonViews = new HashSet<LessonView>();
             this.TestScores = new HashSet<TestScore>();
+            this.LessonCompletions = new HashSet<LessonCompletion>();
+            this.UserDetails1 = new HashSet<UserDetail>();
         }
     
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string ManagerId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CourseCompletion> CourseCompletions { get; set; }
@@ -32,5 +35,10 @@ namespace LMS.DATA.EF
         public virtual ICollection<LessonView> LessonViews { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TestScore> TestScores { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LessonCompletion> LessonCompletions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UserDetail> UserDetails1 { get; set; }
+        public virtual UserDetail UserDetail1 { get; set; }
     }
 }

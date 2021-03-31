@@ -32,6 +32,15 @@
           <Property Name="CourseDescription" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
         </EntityType>
+        <EntityType Name="LessonCompletions">
+          <Key>
+            <PropertyRef Name="LessonsCompletionId" />
+          </Key>
+          <Property Name="LessonsCompletionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="LessonId" Type="int" Nullable="false" />
+          <Property Name="DateCompleted" Type="date" Nullable="false" />
+        </EntityType>
         <EntityType Name="Lessons">
           <Key>
             <PropertyRef Name="LessonId" />
@@ -77,6 +86,7 @@
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="FirstName" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="LastName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ManagerId" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <Association Name="FK_Choices_Questions">
           <End Role="Questions" Type="Self.Questions" Multiplicity="1" />
@@ -110,6 +120,30 @@
               <PropertyRef Name="UserId" />
             </Principal>
             <Dependent Role="CourseCompletions">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LessonCompletions_Lessons">
+          <End Role="Lessons" Type="Self.Lessons" Multiplicity="1" />
+          <End Role="LessonCompletions" Type="Self.LessonCompletions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lessons">
+              <PropertyRef Name="LessonId" />
+            </Principal>
+            <Dependent Role="LessonCompletions">
+              <PropertyRef Name="LessonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LessonCompletions_UserDetails">
+          <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="1" />
+          <End Role="LessonCompletions" Type="Self.LessonCompletions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetails">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="LessonCompletions">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
@@ -186,10 +220,23 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserDetails_UserDetails">
+          <End Role="UserDetails" Type="Self.UserDetails" Multiplicity="0..1" />
+          <End Role="UserDetails1" Type="Self.UserDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetails">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserDetails1">
+              <PropertyRef Name="ManagerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="LearningManagementSystemModelStoreContainer">
           <EntitySet Name="Choices" EntityType="Self.Choices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CourseCompletions" EntityType="Self.CourseCompletions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Courses" EntityType="Self.Courses" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LessonCompletions" EntityType="Self.LessonCompletions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Lessons" EntityType="Self.Lessons" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="LessonViews" EntityType="Self.LessonViews" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Questions" EntityType="Self.Questions" Schema="dbo" store:Type="Tables" />
@@ -206,6 +253,14 @@
           <AssociationSet Name="FK_CourseCompletions_UserDetails" Association="Self.FK_CourseCompletions_UserDetails">
             <End Role="UserDetails" EntitySet="UserDetails" />
             <End Role="CourseCompletions" EntitySet="CourseCompletions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LessonCompletions_Lessons" Association="Self.FK_LessonCompletions_Lessons">
+            <End Role="Lessons" EntitySet="Lessons" />
+            <End Role="LessonCompletions" EntitySet="LessonCompletions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LessonCompletions_UserDetails" Association="Self.FK_LessonCompletions_UserDetails">
+            <End Role="UserDetails" EntitySet="UserDetails" />
+            <End Role="LessonCompletions" EntitySet="LessonCompletions" />
           </AssociationSet>
           <AssociationSet Name="FK_Lessons_Courses" Association="Self.FK_Lessons_Courses">
             <End Role="Courses" EntitySet="Courses" />
@@ -230,6 +285,10 @@
           <AssociationSet Name="FK_TestScores_UserDetails" Association="Self.FK_TestScores_UserDetails">
             <End Role="UserDetails" EntitySet="UserDetails" />
             <End Role="TestScores" EntitySet="TestScores" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserDetails_UserDetails" Association="Self.FK_UserDetails_UserDetails">
+            <End Role="UserDetails" EntitySet="UserDetails" />
+            <End Role="UserDetails1" EntitySet="UserDetails" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -283,6 +342,7 @@
           <NavigationProperty Name="LessonViews" Relationship="Self.FK_LessonViews_Lessons" FromRole="Lessons" ToRole="LessonViews" />
           <NavigationProperty Name="Questions" Relationship="Self.FK_Questions_Lessons" FromRole="Lessons" ToRole="Questions" />
           <NavigationProperty Name="TestScores" Relationship="Self.FK_TestScores_Lessons" FromRole="Lessons" ToRole="TestScores" />
+          <NavigationProperty Name="LessonCompletions" Relationship="LearningManagementSystemModel.FK_LessonCompletions_Lessons" FromRole="Lesson" ToRole="LessonCompletion" />
         </EntityType>
         <EntityType Name="LessonView">
           <Key>
@@ -326,6 +386,10 @@
           <NavigationProperty Name="CourseCompletions" Relationship="Self.FK_CourseCompletions_UserDetails" FromRole="UserDetails" ToRole="CourseCompletions" />
           <NavigationProperty Name="LessonViews" Relationship="Self.FK_LessonViews_UserDetails" FromRole="UserDetails" ToRole="LessonViews" />
           <NavigationProperty Name="TestScores" Relationship="Self.FK_TestScores_UserDetails" FromRole="UserDetails" ToRole="TestScores" />
+          <NavigationProperty Name="LessonCompletions" Relationship="LearningManagementSystemModel.FK_LessonCompletions_UserDetails" FromRole="UserDetail" ToRole="LessonCompletion" />
+          <Property Name="ManagerId" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserDetails1" Relationship="LearningManagementSystemModel.FK_UserDetails_UserDetails" FromRole="UserDetail" ToRole="UserDetail1" />
+          <NavigationProperty Name="UserDetail1" Relationship="LearningManagementSystemModel.FK_UserDetails_UserDetails" FromRole="UserDetail1" ToRole="UserDetail" />
         </EntityType>
         <Association Name="FK_Choices_Questions">
           <End Role="Questions" Type="Self.Question" Multiplicity="1" />
@@ -480,7 +544,67 @@
             <End Role="UserDetails" EntitySet="UserDetails" />
             <End Role="TestScores" EntitySet="TestScores" />
           </AssociationSet>
+          <EntitySet Name="LessonCompletions" EntityType="LearningManagementSystemModel.LessonCompletion" />
+          <AssociationSet Name="FK_LessonCompletions_UserDetails" Association="LearningManagementSystemModel.FK_LessonCompletions_UserDetails">
+            <End Role="UserDetail" EntitySet="UserDetails" />
+            <End Role="LessonCompletion" EntitySet="LessonCompletions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LessonCompletions_Lessons" Association="LearningManagementSystemModel.FK_LessonCompletions_Lessons">
+            <End Role="Lesson" EntitySet="Lessons" />
+            <End Role="LessonCompletion" EntitySet="LessonCompletions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserDetails_UserDetails" Association="LearningManagementSystemModel.FK_UserDetails_UserDetails">
+            <End Role="UserDetail" EntitySet="UserDetails" />
+            <End Role="UserDetail1" EntitySet="UserDetails" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="LessonCompletion">
+          <Key>
+            <PropertyRef Name="LessonsCompletionId" />
+          </Key>
+          <Property Name="LessonsCompletionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="DateCompleted" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="UserDetail" Relationship="LearningManagementSystemModel.FK_LessonCompletions_UserDetails" FromRole="LessonCompletion" ToRole="UserDetail" />
+          <Property Name="LessonId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Lesson" Relationship="LearningManagementSystemModel.FK_LessonCompletions_Lessons" FromRole="LessonCompletion" ToRole="Lesson" />
+        </EntityType>
+        <Association Name="FK_LessonCompletions_UserDetails">
+          <End Type="LearningManagementSystemModel.UserDetail" Role="UserDetail" Multiplicity="1" />
+          <End Type="LearningManagementSystemModel.LessonCompletion" Role="LessonCompletion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetail">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="LessonCompletion">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LessonCompletions_Lessons">
+          <End Type="LearningManagementSystemModel.Lesson" Role="Lesson" Multiplicity="1" />
+          <End Type="LearningManagementSystemModel.LessonCompletion" Role="LessonCompletion" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lesson">
+              <PropertyRef Name="LessonId" />
+            </Principal>
+            <Dependent Role="LessonCompletion">
+              <PropertyRef Name="LessonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserDetails_UserDetails">
+          <End Type="LearningManagementSystemModel.UserDetail" Role="UserDetail" Multiplicity="0..1" />
+          <End Type="LearningManagementSystemModel.UserDetail" Role="UserDetail1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDetail">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserDetail1">
+              <PropertyRef Name="ManagerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -562,9 +686,20 @@
           <EntitySetMapping Name="UserDetails">
             <EntityTypeMapping TypeName="LearningManagementSystemModel.UserDetail">
               <MappingFragment StoreEntitySet="UserDetails">
+                <ScalarProperty Name="ManagerId" ColumnName="ManagerId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LessonCompletions">
+            <EntityTypeMapping TypeName="LearningManagementSystemModel.LessonCompletion">
+              <MappingFragment StoreEntitySet="LessonCompletions">
+                <ScalarProperty Name="LessonId" ColumnName="LessonId" />
+                <ScalarProperty Name="DateCompleted" ColumnName="DateCompleted" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="LessonsCompletionId" ColumnName="LessonsCompletionId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

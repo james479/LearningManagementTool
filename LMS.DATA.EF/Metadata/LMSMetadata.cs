@@ -130,7 +130,7 @@ namespace LMS.DATA.EF
         public int LessonId { get; set; }
 
         [Display(Name = "Date Viewed")]
-        [Required(ErrorMessage = "*Date Viewed required")]
+        [DisplayFormat(DataFormatString = "{0:d}")]
         public System.DateTime DateViewed { get; set; }
     }
 
@@ -138,7 +138,52 @@ namespace LMS.DATA.EF
 
     public partial class LessonView
     {
+        [Display(Name = "Name")]
+        public string Name
+        {
+            get { return $"{UserDetail.FirstName} {UserDetail.LastName}"; }
+        }
 
+        public string Course
+        {
+            get { return Lesson.Course.CourseName; }
+        }
+    }
+
+    #endregion
+
+    #region Lesson Completion Metadata
+
+    public class LessionCompletionMetadata
+    {
+        public string UserId { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        public System.DateTime DateCompleted { get; set; }
+        public int LessonId { get; set; }
+    }
+
+    [MetadataType(typeof(LessionCompletionMetadata))]
+
+    public partial class LessonCompletion
+    {
+        [Display(Name = "Name")]
+        public string Name
+        {
+            get { return $"{UserDetail.FirstName} {UserDetail.LastName}"; }
+        }
+
+        [Display(Name = "Lesson")]
+        public string LessonTitle
+        {
+            get { return Lesson.LessonTitle; }
+        }
+
+        [Display(Name = "Course")]
+        public string Course
+        {
+            get { return Lesson.Course.CourseName; }
+        }
     }
 
     #endregion
@@ -177,6 +222,41 @@ namespace LMS.DATA.EF
 
     #endregion
 
-   
+    #region User Detail Metadata
+
+    public class UserDetailMetadata
+    {
+        [Display(Name = "First Name")]
+        [Required(ErrorMessage = "*First Name required")]
+        [StringLength(50, ErrorMessage = "*Must be 50 characteres or less")]
+        public string FirstName { get; set; }
+
+        [Display(Name = "Last Name")]
+        [Required(ErrorMessage = "*Last Name required")]
+        [StringLength(50, ErrorMessage = "*Must be 50 characteres or less")]
+        public string LastName { get; set; }
+
+        [Display(Name = "Manager")]
+        [DisplayFormat(NullDisplayText = "[N/A]")]
+        public string ManagerId { get; set; }
+    }
+
+    [MetadataType(typeof(UserDetailMetadata))]
+
+    public partial class UserDetail
+    {
+        public string FullName
+        {
+            [Display(Name = "Full Name")]
+            get { return $"{FirstName} {LastName}"; }
+        }
+
+        [Display(Name = "Manager")]
+        public string UserManager
+        {
+            get { return $"{UserDetail1.FirstName} {UserDetail1.LastName}"; }
+        }
+    }
+    #endregion
 
 }

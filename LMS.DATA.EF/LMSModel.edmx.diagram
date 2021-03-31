@@ -22,6 +22,10 @@
         <AssociationConnector Association="LearningManagementSystemModel.FK_TestScores_Lessons" ManuallyRouted="false" />
         <AssociationConnector Association="LearningManagementSystemModel.FK_LessonViews_UserDetails" ManuallyRouted="false" />
         <AssociationConnector Association="LearningManagementSystemModel.FK_TestScores_UserDetails" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LearningManagementSystemModel.LessonCompletion" Width="1.5" PointX="3.625" PointY="11" />
+        <AssociationConnector Association="LearningManagementSystemModel.FK_LessonCompletions_UserDetails" />
+        <AssociationConnector Association="LearningManagementSystemModel.FK_LessonCompletions_Lessons" />
+        <AssociationConnector Association="LearningManagementSystemModel.FK_UserDetails_UserDetails" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -33,5 +33,6 @@ namespace LMS.DATA.EF
         public virtual DbSet<Question> Questions { get; set; }
         public virtual DbSet<TestScore> TestScores { get; set; }
         public virtual DbSet<UserDetail> UserDetails { get; set; }
+        public virtual DbSet<LessonCompletion> LessonCompletions { get; set; }
     }
 }

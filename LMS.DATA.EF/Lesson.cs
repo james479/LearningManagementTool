@@ -20,6 +20,7 @@ namespace LMS.DATA.EF
             this.LessonViews = new HashSet<LessonView>();
             this.Questions = new HashSet<Question>();
             this.TestScores = new HashSet<TestScore>();
+            this.LessonCompletions = new HashSet<LessonCompletion>();
         }
     
         public int LessonId { get; set; }
@@ -37,5 +38,7 @@ namespace LMS.DATA.EF
         public virtual ICollection<Question> Questions { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TestScore> TestScores { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<LessonCompletion> LessonCompletions { get; set; }
     }
 }
